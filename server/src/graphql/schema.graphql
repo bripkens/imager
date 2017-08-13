@@ -1,0 +1,25 @@
+scalar Date
+
+type GeoPoint {
+  lat: Float!
+  lon: Float!
+}
+
+type Image {
+  id: String!
+  date: Date
+  camera: String
+  lens: String
+  width: Int
+  height: Int
+  aspectRatio: Float
+  subjectArea: [Int]
+  location: GeoPoint
+  city: String
+  country: String
+  continent: String
+}
+
+type Query {
+  image(id: ID): Image
+}

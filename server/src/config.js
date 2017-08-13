@@ -13,6 +13,8 @@ module.exports = {
     }
   },
 
+  baseUrl: 'http://127.0.0.1:2998',
+
   elasticsearch: {
     host: getVarOrFail('SERVER_ELASTICSEARCH_HOST'),
     log: getVarOrDefault('SERVER_ELASTICSEARCH_LOG', 'info'),
