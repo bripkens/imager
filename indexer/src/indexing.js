@@ -4,6 +4,7 @@ const fs = Promise.promisifyAll(require('fs'));
 const promiseLimit = require('promise-limit');
 const dms2dec = require('dms2dec');
 const moment = require('moment');
+const crypto = require('crypto');
 const path = require('path');
 
 const {searchForGeoLocation} = require('./geonames');
@@ -11,10 +12,9 @@ const {saveImages} = require('./elasticsearch');
 const {getExif} = require('./exif');
 const config = require('./config');
 
-const concurrentImageIndexingJobLimiter = promiseLimit(3);
-
 // used to detect loops
 const indexedDirectories = {};
+const concurrentImageIndexingJobLimiter = promiseLimit(3);
 
 exports.start = async () => {
   await indexDirectory(config.imageDir);
@@ -52,25 +52,33 @@ async function categorizePaths(paths) {
   return {dirs, imgs};
 }
 
-async function toImageData(path) {
-  logger.debug('Indexing image %s', path);
+async function toImageData(p) {
+  logger.debug('Indexing image %s', p);
   let hasExif = false;
   let exif = {};
 
-  if (/\.jpe?g$/i.test(path)) {
+  if (/\.jpe?g$/i.test(p)) {
     try {
-      exif = await getExif(path);
+      exif = await getExif(p);
       hasExif = true;
     } catch (e) {
       if (e.code === 'PARSING_ERROR') {
-        logger.debug('Image %s has invalid exif data', path);
+        logger.debug('Image %s has invalid exif data', p);
       } else if (e.code !== 'NO_EXIF_SEGMENT') {
         throw e;
       }
     }
   }
 
-  const image = {path, hasExif};
+  const hash = crypto.createHash('sha256');
+  hash.update(path.relative(config.imageDir, p));
+  const id = hash.digest('hex');
+  const image = {
+    id,
+    path: p,
+    hasExif,
+    saveDate: Date.now()
+  };
 
   if (hasExif) {
     image.width = exif.exif.ExifImageWidth;

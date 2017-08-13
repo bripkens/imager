@@ -10,7 +10,10 @@ main()
   });
 
 async function main() {
-  require('./admin').start();
   await require('./geonames').start();
+  await require('./elasticsearch').start();
+  require('./admin').start();
+
+  // kick of the indexing action
   await require('./indexing').start();
 }
