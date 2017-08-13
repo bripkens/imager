@@ -86,8 +86,8 @@ async function toImageData(p) {
     image.aspectRatio = Number((image.width / image.height).toFixed(2));
     image.camera = `${exif.image.Make} ${exif.image.Model}`;
     image.lens = `${exif.exif.LensMake} ${exif.exif.LensModel}`
-    if (exif.image.DateTimeOriginal) {
-      image.date = moment(exif.image.DateTimeOriginal, 'YYYY:MM:DD HH:mm:ss').toDate().getTime();
+    if (exif.exif.DateTimeOriginal) {
+      image.date = moment(exif.exif.DateTimeOriginal, 'YYYY:MM:DD HH:mm:ss').toDate().getTime();
     }
     image.subjectArea = exif.exif.SubjectArea;
     if (exif.gps.GPSLatitude && exif.gps.GPSLongitude) {
