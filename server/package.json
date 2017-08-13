@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Exposes a GraphQL interface through which image data can be retrieved",
+  "main": "src/index.js",
+  "author": "Ben Ripkens <bripkens@gmail.com> (http://bripkens.de/)",
+  "license": "MIT",
+  "dependencies": {
+    "admin": "^1.4.0",
+    "admin-plugin-config": "^1.0.0",
+    "admin-plugin-environment": "^1.0.0",
+    "admin-plugin-index": "^1.1.1",
+    "admin-plugin-profile": "^1.1.0",
+    "admin-plugin-report": "^1.0.1",
+    "admin-plugin-terminate": "^1.0.0",
+    "apollo-server-express": "^1.1.0",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "get-logger": "^1.0.0"
+  }
+}
