@@ -11,6 +11,5 @@ and the [countryInfo.txt](http://download.geonames.org/export/dump/countryInfo.t
 Configure the application by setting environment variables. Refer to `src/config.js` to read up on the variables.
 
 ```
-brew install exiftool
 yarn && yarn start
 ```
