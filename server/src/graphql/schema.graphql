@@ -1,5 +1,3 @@
-scalar Date
-
 type GeoPoint {
   lat: Float!
   lon: Float!
@@ -7,7 +5,8 @@ type GeoPoint {
 
 type Image {
   id: String!
-  date: Date
+  # TODO use a custom Date scalar
+  date: Float
   camera: String
   lens: String
   width: Int
@@ -20,6 +19,18 @@ type Image {
   continent: String
 }
 
+type YearBreakdown {
+  year: String!
+  numberOfPhotos: Int!
+}
+
+type CountryAggregationResult {
+  country: String!
+  numberOfPhotos: Int!
+  years: [YearBreakdown]!
+}
+
 type Query {
   image(id: ID): Image
+  countries: [CountryAggregationResult]!
 }

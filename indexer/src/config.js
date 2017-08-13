@@ -4,7 +4,7 @@ module.exports = {
   admin: {
     http: {
       bindAddress: '127.0.0.1',
-      port: 2998
+      port: 2999
     }
   },
 

@@ -36,7 +36,14 @@ exports.start = async () => {
             'subjectArea': {'type': 'double'},
             'location': {'type': 'geo_point'},
             'city': {'type': 'text'},
-            'country': {'type': 'text'},
+            'country': {
+              'type': 'text',
+              'fields': {
+                'keyword': {
+                  'type': 'keyword'
+                }
+              }
+            },
             'continent': {'type': 'text'}
           }
         }
