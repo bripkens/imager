@@ -21,7 +21,7 @@ exports.getExif = path => {
       });
     } catch (e) {
       readErrors.mark();
-      throw e;
+      reject(e);
     }
   });
 }

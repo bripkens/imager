@@ -7,20 +7,28 @@ const path = require('path');
 const config = require('./config');
 const {getExif} = require('./exif');
 
-const concurrentDirectoryIndexingJobLimiter = promiseLimit(2);
-const concurrentImageIndexingJobLimiter = promiseLimit(1);
+const concurrentImageIndexingJobLimiter = promiseLimit(3);
+
+// used to detect loops
+const indexedDirectories = {};
 
 exports.start = async () => {
-  logger.info('Starting to index directory %s', config.imageDir);
   await indexDirectory(config.imageDir);
 }
 
 async function indexDirectory(directory) {
+  if (indexedDirectories[directory]) {
+    logger.debug('Ignore already indexed directory %s', directory);
+    return;
+  }
+  indexedDirectories[directory] = true;
+
+  logger.debug('Indexing directory %s', directory);
   const names = await fs.readdirAsync(directory);
   const paths = names.map(name => path.join(directory, name));
   const {dirs, imgs} = await categorizePaths(paths);
-  await Promise.all(dirs.map(dirPath => concurrentDirectoryIndexingJobLimiter(() => indexDirectory(dirPath))));
   await Promise.all(imgs.map(imgPath => concurrentImageIndexingJobLimiter(() => indexImage(imgPath))));
+  await Promise.all(dirs.map(dirPath => indexDirectory(dirPath)));
 }
 
 async function categorizePaths(paths) {
@@ -38,7 +46,7 @@ async function categorizePaths(paths) {
 }
 
 async function indexImage(path) {
-  logger.info('Indexing %s', path);
+  logger.debug('Indexing image %s', path);
   let hasExif = false;
   let exif = {};
 
@@ -47,7 +55,9 @@ async function indexImage(path) {
       exif = await getExif(path);
       hasExif = true;
     } catch (e) {
-      if (e.code !== 'NO_EXIF_SEGMENT') {
+      if (e.code === 'PARSING_ERROR') {
+        logger.debug('Image %s has invalid exif data', path);
+      } else if (e.code !== 'NO_EXIF_SEGMENT') {
         throw e;
       }
     }
