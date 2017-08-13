@@ -12,15 +12,21 @@
     "admin": "^1.4.0",
     "admin-plugin-config": "^1.0.0",
     "admin-plugin-environment": "^1.0.0",
+    "admin-plugin-healthcheck": "^1.1.0",
     "admin-plugin-index": "^1.1.1",
     "admin-plugin-measured": "^1.0.0",
     "admin-plugin-profile": "^1.1.0",
     "admin-plugin-report": "^1.0.1",
     "admin-plugin-terminate": "^1.0.0",
     "bluebird": "^3.5.0",
+    "dms2dec": "^1.1.0",
+    "elasticsearch": "^13.3.1",
     "exif": "^0.6.0",
+    "geokdbush": "^1.1.0",
     "get-logger": "^1.0.0",
+    "kdbush": "^1.0.1",
     "measured": "^1.1.0",
+    "moment": "^2.18.1",
     "promise-limit": "^2.5.0"
   }
 }

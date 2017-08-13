@@ -1,7 +1,6 @@
 const logger = require('get-logger')('indexer:index');
-require('./admin');
 
-require('./indexing').start()
+main()
   .then(() => {
     logger.info('Finished indexing');
     process.exit(0);
@@ -9,3 +8,9 @@ require('./indexing').start()
     logger.error('Uncaught error occurred', err);
     process.exit(1);
   });
+
+async function main() {
+  require('./admin').start();
+  await require('./geonames').start();
+  await require('./indexing').start();
+}

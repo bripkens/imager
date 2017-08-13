@@ -2,10 +2,14 @@ const logger = require('get-logger')('indexer:indexing');
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'));
 const promiseLimit = require('promise-limit');
+const dms2dec = require('dms2dec');
+const moment = require('moment');
 const path = require('path');
 
-const config = require('./config');
+const {searchForGeoLocation} = require('./geonames');
+const {saveImages} = require('./elasticsearch');
 const {getExif} = require('./exif');
+const config = require('./config');
 
 const concurrentImageIndexingJobLimiter = promiseLimit(3);
 
@@ -27,7 +31,10 @@ async function indexDirectory(directory) {
   const names = await fs.readdirAsync(directory);
   const paths = names.map(name => path.join(directory, name));
   const {dirs, imgs} = await categorizePaths(paths);
-  await Promise.all(imgs.map(imgPath => concurrentImageIndexingJobLimiter(() => indexImage(imgPath))));
+  const images = await Promise.all(imgs.map(imgPath => concurrentImageIndexingJobLimiter(() => toImageData(imgPath))));
+  if (images.length > 0) {
+    await saveImages(images);
+  }
   await Promise.all(dirs.map(dirPath => indexDirectory(dirPath)));
 }
 
@@ -45,7 +52,7 @@ async function categorizePaths(paths) {
   return {dirs, imgs};
 }
 
-async function indexImage(path) {
+async function toImageData(path) {
   logger.debug('Indexing image %s', path);
   let hasExif = false;
   let exif = {};
@@ -62,4 +69,34 @@ async function indexImage(path) {
       }
     }
   }
+
+  const image = {path, hasExif};
+
+  if (hasExif) {
+    image.width = exif.exif.ExifImageWidth;
+    image.height = exif.exif.ExifImageHeight;
+    image.aspectRatio = Number((image.width / image.height).toFixed(2));
+    image.camera = `${exif.image.Make} ${exif.image.Model}`;
+    image.lens = `${exif.exif.LensMake} ${exif.exif.LensModel}`
+    if (exif.image.DateTimeOriginal) {
+      image.date = moment(exif.image.DateTimeOriginal, 'YYYY:MM:DD HH:mm:ss').toDate().getTime();
+    }
+    image.subjectArea = exif.exif.SubjectArea;
+    if (exif.gps.GPSLatitude && exif.gps.GPSLongitude) {
+      const location = dms2dec(exif.gps.GPSLatitude, exif.gps.GPSLatitudeRef, exif.gps.GPSLongitude, exif.gps.GPSLongitudeRef);
+      image.location = {
+        lat: location[0],
+        lon: location[1]
+      };
+
+      const geo = searchForGeoLocation(location[0], location[1]);
+      if (geo) {
+        image.city = geo.city;
+        image.country = geo.country;
+        image.continent = geo.continent;
+      }
+    }
+  }
+
+  return image;
 }
