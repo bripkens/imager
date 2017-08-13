@@ -1,21 +1,27 @@
-const exiftool = require('node-exiftool');
+const {ExifImage} = require('exif');
 
-let ep;
-async function getExifProcess() {
-  if (ep != null) {
-    return ep;
-  }
+const {metricsCollection} = require('./measured');
 
-  ep = new exiftool.ExiftoolProcess();
-  await ep.open();
-  return ep;
+const readHistogram = metricsCollection.histogram('indexer.exif.read');
+const readErrors = metricsCollection.meter('indexer.exif.readErrors');
+
+exports.getExif = path => {
+  const start = Date.now();
+
+  return new Promise((resolve, reject) => {
+    try {
+      new ExifImage({image: path}, (error, exifData) => {
+        if (error) {
+          readErrors.mark();
+          reject(error);
+        } else {
+          readHistogram.update(Date.now() - start);
+          resolve(exifData);
+        }
+      });
+    } catch (e) {
+      readErrors.mark();
+      throw e;
+    }
+  });
 }
-
-exports.getExif = async path => {
-  const exifProcess = await getExifProcess();
-  const result = await exifProcess.readMetadata(path, ['-File:all']);
-  if (result.error) {
-    throw new Error(result.error);
-  }
-  return result.data;
-};

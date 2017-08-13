@@ -1,7 +1,15 @@
 const logger = require('get-logger')('indexer:config');
 
 module.exports = {
-  imageDir: getVarOrFail('INDEXER_IMAGE_DIR')
+  admin: {
+    http: {
+      bindAddress: '127.0.0.1',
+      port: 2998
+    }
+  },
+
+  imageDir: getVarOrFail('INDEXER_IMAGE_DIR'),
+  imageNameRegex: /\.(png|jpg|jpeg|gif)$/i
 };
 
 function getVarOrFail(name) {

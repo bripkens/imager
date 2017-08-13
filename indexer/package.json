@@ -9,7 +9,18 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "admin": "^1.4.0",
+    "admin-plugin-config": "^1.0.0",
+    "admin-plugin-environment": "^1.0.0",
+    "admin-plugin-index": "^1.1.1",
+    "admin-plugin-measured": "^1.0.0",
+    "admin-plugin-profile": "^1.1.0",
+    "admin-plugin-report": "^1.0.1",
+    "admin-plugin-terminate": "^1.0.0",
+    "bluebird": "^3.5.0",
+    "exif": "^0.6.0",
     "get-logger": "^1.0.0",
-    "node-exiftool": "^2.2.0"
+    "measured": "^1.1.0",
+    "promise-limit": "^2.5.0"
   }
 }
