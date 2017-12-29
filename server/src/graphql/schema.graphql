@@ -19,18 +19,13 @@ type Image {
   continent: String
 }
 
-type YearBreakdown {
-  year: String!
+type CityAggregationResult {
+  city: String!
   numberOfPhotos: Int!
-}
-
-type CountryAggregationResult {
-  country: String!
-  numberOfPhotos: Int!
-  years: [YearBreakdown]!
+  location: GeoPoint
 }
 
 type Query {
   image(id: ID): Image
-  countries: [CountryAggregationResult]!
+  cities: [CityAggregationResult]!
 }

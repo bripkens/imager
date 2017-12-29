@@ -23,24 +23,21 @@ exports.getImage = async id => {
   return image._source;
 };
 
-exports.getCountriesOverview = async () => {
+exports.getCitiesOverview = async () => {
   const result = await client.search({
     index: 'imager',
     type: 'image',
     body: {
       "aggs": {
-        "countries": {
+        "cities": {
           "terms": {
-            "field" : "country.keyword",
+            "field" : "city.keyword",
             "missing": "N/A"
           },
-          "aggregations": {
-            "years": {
-              "date_histogram" : {
-                "field": "date",
-                "interval": "year",
-                "format": "yyyy",
-                "order" : {"_count" : "desc"}
+          "aggs": {
+            "location": {
+              "geo_centroid" : {
+                "field": "location"
               }
             }
           }
@@ -48,17 +45,11 @@ exports.getCountriesOverview = async () => {
       }
     }
   });
-  return result.aggregations.countries.buckets.map(bucket => {
+  return result.aggregations.cities.buckets.map(bucket => {
     return {
-      country: bucket.key,
+      city: bucket.key,
       numberOfPhotos: bucket.doc_count,
-      years: bucket.years.buckets.map(yearBucket => {
-        return {
-          year: yearBucket.key_as_string,
-          numberOfPhotos: yearBucket.doc_count,
-        };
-      })
+      location: bucket.location.location
     };
   });
-  return result;
 };

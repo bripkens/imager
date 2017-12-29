@@ -1,19 +1,27 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloProvider } from 'react-apollo';
+import { ApolloClient } from 'apollo-client';
+import { HttpLink } from 'apollo-link-http';
+
 import './App.css';
+
+import Map from './Map';
+
+const client = new ApolloClient({
+  // By default, this client will send queries to the
+  //  `/graphql` endpoint on the same host
+  link: new HttpLink(),
+  cache: new InMemoryCache()
+});
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <ApolloProvider client={client}>
+        <Map />
+      </ApolloProvider>
     );
   }
 }

@@ -294,10 +294,6 @@ cryptiles@2.x.x:
   dependencies:
     boom "2.x.x"
 
-csv-parse@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-1.2.1.tgz#9199c23f2490d98c4d9ab2a0167b06927498c9df"
-
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"

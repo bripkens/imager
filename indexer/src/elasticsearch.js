@@ -35,7 +35,14 @@ exports.start = async () => {
             'aspectRatio': {'type': 'double'},
             'subjectArea': {'type': 'double'},
             'location': {'type': 'geo_point'},
-            'city': {'type': 'text'},
+            'city': {
+              'type': 'text',
+              'fields': {
+                'keyword': {
+                  'type': 'keyword'
+                }
+              }
+            },
             'country': {
               'type': 'text',
               'fields': {
