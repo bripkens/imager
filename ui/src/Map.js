@@ -2,6 +2,7 @@ import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerC
 import { GoogleMap, Marker, withGoogleMap } from "react-google-maps";
 import { compose, withProps } from 'recompose';
 import { graphql } from 'react-apollo';
+import withSizes from 'react-sizes';
 import gql from 'graphql-tag';
 import React from 'react';
 
@@ -21,11 +22,12 @@ query {
 
 
 export default compose(
-  withProps({
+  withSizes(dimensions => dimensions),
+  withProps(({height}) => ({
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `800px` }} />,
+    containerElement: <div style={{ height: `${height}px` }} />,
     mapElement: <div style={{ height: `100%` }} />
-  }),
+  })),
   withGoogleMap,
   graphql(query)
 )(Map);
