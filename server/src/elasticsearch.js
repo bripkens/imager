@@ -9,10 +9,12 @@ const client = new elasticsearch.Client({
   apiVersion: config.elasticsearch.apiVersion
 });
 
+
 exports.healthcheck = async () => {
   await client.ping();
   return 'elasticsearch connection works.'
 };
+
 
 exports.getImage = async id => {
   const image = await client.get({
@@ -23,6 +25,7 @@ exports.getImage = async id => {
   return image._source;
 };
 
+
 exports.getCitiesOverview = async () => {
   const result = await client.search({
     index: 'imager',
@@ -31,13 +34,13 @@ exports.getCitiesOverview = async () => {
       "aggs": {
         "cities": {
           "terms": {
-            "field" : "city.keyword",
+            "field" : "geo.aggregatableCity",
             "missing": "N/A"
           },
           "aggs": {
             "location": {
               "geo_centroid" : {
-                "field": "location"
+                "field": "geo.coords"
               }
             }
           }
@@ -49,7 +52,17 @@ exports.getCitiesOverview = async () => {
     return {
       city: bucket.key,
       numberOfPhotos: bucket.doc_count,
-      location: bucket.location.location
+      coords: bucket.location.location
     };
   });
+};
+
+
+exports.getImages = async (query) => {
+  const result = await client.search({
+    index: 'imager',
+    type: 'image',
+    q: query
+  });
+  return result.hits.hits.map(hit => hit._source);
 };

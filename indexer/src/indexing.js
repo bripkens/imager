@@ -92,16 +92,15 @@ async function toImageData(p) {
     image.subjectArea = exif.exif.SubjectArea;
     if (exif.gps.GPSLatitude && exif.gps.GPSLongitude) {
       const location = dms2dec(exif.gps.GPSLatitude, exif.gps.GPSLatitudeRef, exif.gps.GPSLongitude, exif.gps.GPSLongitudeRef);
-      image.location = {
+      image.geo = searchForGeoLocation(location[0], location[1]) || {};
+      // we are not interested in the coordinates of the city, but we would like to keep using the coords of the pictures
+      image.geo.coords = {
         lat: location[0],
         lon: location[1]
       };
-
-      const geo = searchForGeoLocation(location[0], location[1]);
-      if (geo) {
-        image.city = geo.city;
-        image.country = geo.country;
-        image.continent = geo.continent;
+      const aggregatableCity = [image.geo.city, image.geo.county, image.geo.country].filter(v => !!v);
+      if (aggregatableCity.length > 0) {
+        image.geo.aggregatableCity = aggregatableCity.join(', ');
       }
     }
   }

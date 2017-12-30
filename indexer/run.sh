@@ -4,6 +4,6 @@ set -eo pipefail
 
 export INDEXER_ELASTICSEARCH_HOST="127.0.0.1:9200"
 export INDEXER_IMAGE_DIR="/Users/ben/backup/fotos"
-export INSTANA_GEONAMES_CITY_FILE="/Users/ben/projects/imager/indexer/cities1000.txt"
-export INSTANA_GEONAMES_COUNTRY_FILE="/Users/ben/projects/imager/indexer/countryInfo.txt"
+export IMAGER_GEONAMES_ZIP_FILE="/Users/ben/projects/imager/indexer/zipCodes.txt"
+export IMAGER_GEONAMES_COUNTRY_FILE="/Users/ben/projects/imager/indexer/countryInfo.txt"
 yarn start

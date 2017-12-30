@@ -1,11 +1,19 @@
-type GeoPoint {
+type Coordinates {
   lat: Float!
   lon: Float!
 }
 
+type Geo {
+  coords: Coordinates
+  city: String
+  alternateCityNames: String
+  county: String
+  country: String
+  continent: String
+}
+
 type Image {
   id: String!
-  # TODO use a custom Date scalar
   date: Float
   camera: String
   lens: String
@@ -13,19 +21,17 @@ type Image {
   height: Int
   aspectRatio: Float
   subjectArea: [Int]
-  location: GeoPoint
-  city: String
-  country: String
-  continent: String
+  geo: Geo
 }
 
 type CityAggregationResult {
   city: String!
   numberOfPhotos: Int!
-  location: GeoPoint
+  coords: Coordinates
 }
 
 type Query {
   image(id: ID): Image
+  images(query: String): [Image]!
   cities: [CityAggregationResult]!
 }

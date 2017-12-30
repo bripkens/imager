@@ -1,5 +1,5 @@
-const {getImage, getCitiesOverview} = require('../elasticsearch');
+const {getImage, getImages, getCitiesOverview} = require('../elasticsearch');
 
 exports.image = ({id}) => getImage(id);
-
+exports.images = ({query}) => getImages(query);
 exports.cities = () => getCitiesOverview();

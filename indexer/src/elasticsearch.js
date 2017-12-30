@@ -23,8 +23,14 @@ exports.start = async () => {
       'mappings': {
         'image': {
           'properties': {
-            'id': {'type': 'text'},
-            'path': {'type': 'text'},
+            'id': {
+              'type': 'text',
+              'index': false
+            },
+            'path': {
+              'type': 'text',
+              'index' : false
+            },
             'hasExif': {'type': 'boolean'},
             'saveDate': {'type': 'date'},
             'date': {'type': 'date'},
@@ -34,24 +40,18 @@ exports.start = async () => {
             'height': {'type': 'integer'},
             'aspectRatio': {'type': 'double'},
             'subjectArea': {'type': 'double'},
-            'location': {'type': 'geo_point'},
-            'city': {
-              'type': 'text',
-              'fields': {
-                'keyword': {
-                  'type': 'keyword'
-                }
+            'geo': {
+              'type': 'object',
+              'properties': {
+                'coords': {'type': 'geo_point'},
+                'city': {'type': 'text'},
+                'alternateCityNames': {'type': 'text'},
+                'county': {'type': 'text'},
+                'country': {'type': 'text'},
+                'continent': {'type': 'text'},
+                'aggregatableCity': {'type': 'keyword'}
               }
-            },
-            'country': {
-              'type': 'text',
-              'fields': {
-                'keyword': {
-                  'type': 'keyword'
-                }
-              }
-            },
-            'continent': {'type': 'text'}
+            }
           }
         }
       }

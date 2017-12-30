@@ -12,7 +12,7 @@ query {
   cities {
     city
     numberOfPhotos
-    location {
+    coords {
       lat
       lon
     }
@@ -56,7 +56,7 @@ function Map({data}) {
         gridSize={60}
         calculator={calculateCluster}
       >
-        {data.cities.filter(city => city.location).map(city =>
+        {data.cities.filter(city => city.coords).map(city =>
           <Marker
             key={city.city}
             label={{
@@ -65,8 +65,8 @@ function Map({data}) {
               fontSize: '12px'
             }}
             position={{
-              lat: city.location.lat,
-              lng: city.location.lon
+              lat: city.coords.lat,
+              lng: city.coords.lon
             }}
           />
         )}

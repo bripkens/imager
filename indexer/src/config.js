@@ -18,8 +18,8 @@ module.exports = {
   },
 
   geonames: {
-    citiesFile: getVarOrFail('INSTANA_GEONAMES_CITY_FILE'),
-    countryFile: getVarOrFail('INSTANA_GEONAMES_COUNTRY_FILE')
+    zipFile: getVarOrFail('IMAGER_GEONAMES_ZIP_FILE'),
+    countryFile: getVarOrFail('IMAGER_GEONAMES_COUNTRY_FILE')
   }
 };
 

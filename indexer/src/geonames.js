@@ -33,7 +33,7 @@ async function parseCountryInfo() {
       name: row[4],
       continent: continents[row[8]]
     };
-  })
+  });
 }
 
 async function parseTsv(file) {
@@ -43,18 +43,31 @@ async function parseTsv(file) {
     .map(line => line.split('\t'));
 }
 
+// Format from http://www.geonames.org/export/zip/
+// country code      : iso country code, 2 characters
+// postal code       : varchar(20)
+// place name        : varchar(180)
+// admin name1       : 1. order subdivision (state) varchar(100)
+// admin code1       : 1. order subdivision (state) varchar(20)
+// admin name2       : 2. order subdivision (county/province) varchar(100)
+// admin code2       : 2. order subdivision (county/province) varchar(20)
+// admin name3       : 3. order subdivision (community) varchar(100)
+// admin code3       : 3. order subdivision (community) varchar(20)
+// latitude          : estimated latitude (wgs84)
+// longitude         : estimated longitude (wgs84)
+// accuracy          : accuracy of lat/lng from 1=estimated to 6=centroid
 async function parseCityInfo() {
-  const parseResult = await parseTsv(config.geonames.citiesFile);
+  const parseResult = await parseTsv(config.geonames.zipFile);
   parseResult.forEach(row => {
-    const lat = row[4];
-    const lon = row[5];
+    const lat = row[9];
+    const lon = row[10];
 
     // we need lat&lon in order to execute spatial searches
     if (lat == null || lon == null) {
       return;
     }
-
-    const countryCode = row[8];
+    
+    const countryCode = row[0];
     let countryName;
     let continentName;
     if (countryCode) {
@@ -66,9 +79,12 @@ async function parseCityInfo() {
     }
 
     cities.push({
-      city: row[1],
-      lat: Number(lat),
-      lon: Number(lon),
+      coords: {
+        lat: Number(lat),
+        lon: Number(lon)
+      },
+      city: row[2],
+      county: row[3],
       country: countryName,
       continent: continentName,
     });
@@ -76,7 +92,7 @@ async function parseCityInfo() {
 }
 
 function buildSpatialIndex() {
-  index = kdbush(cities, p => p.lon, p => p.lat);
+  index = kdbush(cities, p => p.coords.lon, p => p.coords.lat);
 }
 
 exports.searchForGeoLocation = (lat, lon) => {
