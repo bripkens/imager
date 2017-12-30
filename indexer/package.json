@@ -4,7 +4,7 @@
   "description": "Scans the local file system and puts changed images into an index",
   "main": "src/index.js",
   "author": "Ben Ripkens <bripkens@gmail.com> (http://bripkens.de/)",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "start": "node src/index.js"
   },
@@ -27,6 +27,7 @@
     "kdbush": "^1.0.1",
     "measured": "^1.1.0",
     "moment": "^2.18.1",
-    "promise-limit": "^2.5.0"
+    "promise-limit": "^2.5.0",
+    "sharp": "^0.18.4"
   }
 }

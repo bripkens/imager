@@ -5,6 +5,7 @@ const promiseLimit = require('promise-limit');
 const dms2dec = require('dms2dec');
 const moment = require('moment');
 const crypto = require('crypto');
+const sharp = require('sharp');
 const path = require('path');
 
 const {searchForGeoLocation} = require('./geonames');
@@ -70,26 +71,35 @@ async function toImageData(p) {
     }
   }
 
+  const sharpImage = sharp(p);
+  const metadata = await sharpImage.metadata();
+  const aspectRatio = Number((metadata.width / metadata.height).toFixed(2));
+
   const hash = crypto.createHash('sha256');
   hash.update(path.relative(config.imageDir, p));
   const id = hash.digest('hex');
+
   const image = {
     id,
     path: p,
     hasExif,
-    saveDate: Date.now()
+    saveDate: Date.now(),
+    width: metadata.width,
+    height: metadata.height,
+    aspectRatio,
+    orientation: aspectRatio > 1 ? 'Landscape' : 'Portrait'
   };
 
+  image.preview = await getImagePreview(image, sharpImage);
+
   if (hasExif) {
-    image.width = exif.exif.ExifImageWidth;
-    image.height = exif.exif.ExifImageHeight;
-    image.aspectRatio = Number((image.width / image.height).toFixed(2));
     image.camera = `${exif.image.Make} ${exif.image.Model}`;
     image.lens = `${exif.exif.LensMake} ${exif.exif.LensModel}`
     if (exif.exif.DateTimeOriginal) {
       const time = moment(exif.exif.DateTimeOriginal, 'YYYY:MM:DD HH:mm:ss');
       image.date = time.toDate().getTime();
       image.year = time.format('YYYY');
+      image.month = time.format('M');
     }
     image.subjectArea = exif.exif.SubjectArea;
     if (exif.gps.GPSLatitude && exif.gps.GPSLongitude) {
@@ -108,4 +118,18 @@ async function toImageData(p) {
   }
 
   return image;
+}
+
+
+async function getImagePreview(image, sharpImage) {
+  const width = image.aspectRatio > 1 ? config.imagePreviewSize : Math.round(image.aspectRatio * config.imagePreviewSize);
+  const height = image.aspectRatio < 1 ? config.imagePreviewSize : Math.round(1 / image.aspectRatio * config.imagePreviewSize);
+
+  const buffer = await sharpImage
+    .resize(width, height)
+    .jpeg({
+      quality: 50
+    })
+    .toBuffer();
+  return `data:image/jpeg;base64,${buffer.toString('base64')}`;
 }

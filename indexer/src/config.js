@@ -10,6 +10,7 @@ module.exports = {
 
   imageDir: getVarOrFail('INDEXER_IMAGE_DIR'),
   imageNameRegex: /\.(png|jpg|jpeg|gif)$/i,
+  imagePreviewSize: 20,
 
   elasticsearch: {
     host: getVarOrFail('INDEXER_ELASTICSEARCH_HOST'),

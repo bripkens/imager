@@ -4,7 +4,7 @@
   "description": "Exposes a GraphQL interface through which image data can be retrieved",
   "main": "src/index.js",
   "author": "Ben Ripkens <bripkens@gmail.com> (http://bripkens.de/)",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "start": "node src/index.js"
   },

@@ -21,6 +21,8 @@ type Image {
   width: Int
   height: Int
   aspectRatio: Float
+  orientation: String,
+  preview: String,
   subjectArea: [Int]
   geo: Geo
 }

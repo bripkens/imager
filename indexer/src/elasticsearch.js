@@ -35,12 +35,18 @@ exports.start = async () => {
             'saveDate': {'type': 'date'},
             'date': {'type': 'date'},
             'year': {'type': 'integer'},
+            'month': {'type': 'integer'},
             'camera': {'type': 'text'},
             'lens': {'type': 'text'},
             'width': {'type': 'integer'},
             'height': {'type': 'integer'},
             'aspectRatio': {'type': 'double'},
+            'orientation': {'type': 'text'},
             'subjectArea': {'type': 'double'},
+            'preview': {
+              'type': 'text',
+              'index': false
+            },
             'geo': {
               'type': 'object',
               'properties': {
