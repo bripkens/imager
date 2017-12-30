@@ -31,11 +31,13 @@ exports.getCitiesOverview = async () => {
     index: 'imager',
     type: 'image',
     body: {
+      'size': 0,
       "aggs": {
         "cities": {
           "terms": {
-            "field" : "geo.aggregatableCity",
-            "missing": "N/A"
+            "field" : "geo.location.keyword",
+            "missing": "N/A",
+            "size": 1000
           },
           "aggs": {
             "location": {
@@ -62,7 +64,18 @@ exports.getImages = async (query) => {
   const result = await client.search({
     index: 'imager',
     type: 'image',
-    q: query
+    body: {
+      'size': 200,
+      'sort': [
+        {'date': {'order': 'asc'}}
+      ],
+      'query': {
+        'query_string': {
+          'query': query,
+          'default_operator': 'AND'
+        }
+      }
+    }
   });
   return result.hits.hits.map(hit => hit._source);
 };

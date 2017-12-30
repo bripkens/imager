@@ -87,7 +87,9 @@ async function toImageData(p) {
     image.camera = `${exif.image.Make} ${exif.image.Model}`;
     image.lens = `${exif.exif.LensMake} ${exif.exif.LensModel}`
     if (exif.exif.DateTimeOriginal) {
-      image.date = moment(exif.exif.DateTimeOriginal, 'YYYY:MM:DD HH:mm:ss').toDate().getTime();
+      const time = moment(exif.exif.DateTimeOriginal, 'YYYY:MM:DD HH:mm:ss');
+      image.date = time.toDate().getTime();
+      image.year = time.format('YYYY');
     }
     image.subjectArea = exif.exif.SubjectArea;
     if (exif.gps.GPSLatitude && exif.gps.GPSLongitude) {
@@ -98,9 +100,9 @@ async function toImageData(p) {
         lat: location[0],
         lon: location[1]
       };
-      const aggregatableCity = [image.geo.city, image.geo.county, image.geo.country].filter(v => !!v);
-      if (aggregatableCity.length > 0) {
-        image.geo.aggregatableCity = aggregatableCity.join(', ');
+      const locationParts = [image.geo.city, image.geo.county, image.geo.country].filter(v => !!v);
+      if (locationParts.length > 0) {
+        image.geo.location = locationParts.join(', ');
       }
     }
   }

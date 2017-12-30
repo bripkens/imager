@@ -49,6 +49,7 @@ function Map({data}) {
     <GoogleMap
       defaultZoom={2}
       defaultCenter={{ lat: 0, lng: 0 }}
+      streetViewControl={false}
     >
       <MarkerClusterer
         averageCenter

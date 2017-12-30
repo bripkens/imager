@@ -34,6 +34,7 @@ exports.start = async () => {
             'hasExif': {'type': 'boolean'},
             'saveDate': {'type': 'date'},
             'date': {'type': 'date'},
+            'year': {'type': 'integer'},
             'camera': {'type': 'text'},
             'lens': {'type': 'text'},
             'width': {'type': 'integer'},
@@ -45,11 +46,17 @@ exports.start = async () => {
               'properties': {
                 'coords': {'type': 'geo_point'},
                 'city': {'type': 'text'},
-                'alternateCityNames': {'type': 'text'},
                 'county': {'type': 'text'},
                 'country': {'type': 'text'},
                 'continent': {'type': 'text'},
-                'aggregatableCity': {'type': 'keyword'}
+                'location': {
+                  'type': 'text',
+                  'fields': {
+                    'keyword': {
+                      'type': 'keyword'
+                    }
+                  }
+                }
               }
             }
           }

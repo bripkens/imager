@@ -5,8 +5,8 @@ type Coordinates {
 
 type Geo {
   coords: Coordinates
+  location: String
   city: String
-  alternateCityNames: String
   county: String
   country: String
   continent: String
@@ -15,6 +15,7 @@ type Geo {
 type Image {
   id: String!
   date: Float
+  year: Int
   camera: String
   lens: String
   width: Int
