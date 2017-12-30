@@ -36,5 +36,5 @@ type CityAggregationResult {
 type Query {
   image(id: ID): Image
   images(query: String): [Image]!
-  cities: [CityAggregationResult]!
+  cities(query: String): [CityAggregationResult]!
 }

@@ -26,8 +26,8 @@ exports.getImage = async id => {
 };
 
 
-exports.getCitiesOverview = async () => {
-  const result = await client.search({
+exports.getCitiesOverview = async (query) => {
+  const req = {
     index: 'imager',
     type: 'image',
     body: {
@@ -49,7 +49,22 @@ exports.getCitiesOverview = async () => {
         }
       }
     }
-  });
+  };
+
+  if (query) {
+    req.body.query = {
+      'bool': {
+        'must': [{
+          'query_string': {
+            'query': query,
+            'default_operator': 'AND'
+          }
+        }]
+      }
+    };
+  }
+
+  const result = await client.search(req);
   return result.aggregations.cities.buckets.map(bucket => {
     return {
       city: bucket.key,
