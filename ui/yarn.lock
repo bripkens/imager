@@ -3,12 +3,12 @@
 
 
 "@bripkens/rxstore-react@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@bripkens/rxstore-react/-/rxstore-react-1.0.0.tgz#51c9ebcf905af3ce704962ff2da8a02cfd7da751"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@bripkens/rxstore-react/-/rxstore-react-1.1.0.tgz#311732a9119eb3886243142ca82d21492def21ad"
 
 "@bripkens/rxstore@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@bripkens/rxstore/-/rxstore-1.0.0.tgz#3cff14e44849c3a64af021be4476f3be77ce6e78"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@bripkens/rxstore/-/rxstore-1.1.0.tgz#d96fd1227480cdb0123df751bc4c53f00cd74d75"
   dependencies:
     rxjs "^5.4.3"
 

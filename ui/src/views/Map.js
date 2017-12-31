@@ -1,5 +1,6 @@
 import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
 import { GoogleMap, Marker, withGoogleMap } from "react-google-maps";
+import { connect } from '@bripkens/rxstore-react';
 import { compose, withProps } from 'recompose';
 import { graphql } from 'react-apollo';
 import withSizes from 'react-sizes';
@@ -8,7 +9,6 @@ import React from 'react';
 
 import TopBar, {height as topBarHeight} from '../components/TopBar/TopBar';
 import { location$ } from '../stores/location';
-import connect from '../hoc/connect';
 
 const query = gql`
 query cities($query: String) {

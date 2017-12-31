@@ -7,8 +7,10 @@ const styles = {
   }
 }
 
-export default radium(function ViewItem() {
-  return (
-  );
-});
+export default radium();
 
+function ViewItem() {
+  return (
+    
+  );
+}

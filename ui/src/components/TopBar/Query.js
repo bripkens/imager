@@ -1,10 +1,10 @@
+import { connect } from '@bripkens/rxstore-react';
 import { createStore } from "@bripkens/rxstore";
 import { compose } from "recompose";
 import radium from "radium";
 import React from "react";
 
 import { location$, setQueryString } from "../../stores/location";
-import connect from "../../hoc/connect";
 
 const store = createStore({
   name: "TopBar/Query",
