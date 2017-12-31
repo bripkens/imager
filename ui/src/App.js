@@ -13,6 +13,7 @@ import {
 } from 'react-router-dom';
 
 import { history } from './stores/location';
+import List from './views/List/List';
 import Map from './views/Map';
 
 const client = new ApolloClient({
@@ -34,6 +35,7 @@ export default function App() {
         <Router history={history}>
           <Switch>
             <Route path="/map" component={Map}/>
+            <Route path="/list" component={List}/>
             <Redirect from="/" to="/map"/>
           </Switch>
         </Router>

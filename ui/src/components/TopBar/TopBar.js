@@ -16,7 +16,8 @@ const styles = {
     height: `${height}px`,
     display: 'flex',
     alignItems: 'center',
-    padding: '0 1rem'
+    padding: '0 1rem',
+    zIndex: 1
   }
 };
 
