@@ -1,5 +1,6 @@
 import createHashHistory from 'history/createHashHistory';
 import {createStore} from '@bripkens/rxstore';
+import {cloneDeep} from 'lodash';
 import qs from 'qs';
 
 export const history = createHashHistory();
@@ -42,4 +43,46 @@ export function setQueryString(k, v) {
       })
     }
   });
+}
+
+
+export function getUrl$(mutator) {
+  return store.observable
+    .map(location => {
+      location = cloneDeep(location);
+      mutator(location);
+      return stringify(location);
+    })
+    .distinctUntilChanged();
+}
+
+
+function stringify(location) {
+  return `/#${location.pathname}${getQuery(location.query)}`;
+}
+
+function getQuery(query) {
+  if (!query) {
+    return '';
+  }
+
+  let result = '';
+  let first = true;
+  for (let key in query) {
+    if (first) {
+      result += '?';
+      first = false;
+    } else {
+      result += '&';
+    }
+
+    const value = query[key];
+    if (value == null || value === '') {
+      result += `${encodeURIComponent(key)}`;
+    } else {
+      result += `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+    }
+  }
+
+  return result;
 }

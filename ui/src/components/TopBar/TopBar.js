@@ -1,6 +1,7 @@
 import radium from 'radium';
 import React from 'react';
 
+import ViewSwitcher from './ViewSwitcher';
 import Query from './Query';
 
 export const height = 40;
@@ -24,6 +25,7 @@ export default radium(TopBar);
 function TopBar() {
   return  (
     <div style={styles.base}>
+      <ViewSwitcher />
       <Query />
     </div>
   );
