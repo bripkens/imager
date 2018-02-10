@@ -20,7 +20,9 @@
     "admin-plugin-terminate": "^1.0.0",
     "bluebird": "^3.5.0",
     "dms2dec": "^1.1.0",
+    "dotenv": "^5.0.0",
     "elasticsearch": "^13.3.1",
+    "eslint-config-prettier": "^2.9.0",
     "exif": "^0.6.0",
     "geokdbush": "^1.1.0",
     "get-logger": "^1.0.0",
@@ -29,5 +31,12 @@
     "moment": "^2.18.1",
     "promise-limit": "^2.5.0",
     "sharp": "^0.18.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1"
   }
 }

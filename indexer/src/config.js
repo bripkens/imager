@@ -9,6 +9,7 @@ module.exports = {
   },
 
   imageDir: getVarOrFail('INDEXER_IMAGE_DIR'),
+  storageDir: getVarOrFail('INDEXER_STORAGE_DIR'),
   imageNameRegex: /\.(png|jpg|jpeg|gif)$/i,
   imagePreviewSize: 20,
 

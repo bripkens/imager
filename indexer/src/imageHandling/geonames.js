@@ -1,11 +1,8 @@
-const logger = require('get-logger')('indexer:geonames');
-const Promise = require('bluebird');
-const fs = Promise.promisifyAll(require('fs'));
 const geokdbush = require('geokdbush');
 const kdbush = require('kdbush');
-const path = require('path');
+const fs = require('fs');
 
-const config = require('./config');
+const config = require('../config');
 
 const continents = {
   AF: 'Africa',
@@ -66,7 +63,7 @@ async function parseCityInfo() {
     if (lat == null || lon == null) {
       return;
     }
-    
+
     const countryCode = row[0];
     let countryName;
     let continentName;

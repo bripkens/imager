@@ -10,7 +10,7 @@ website. More specifically:
 - the [zip codes codes](http://www.geonames.org/export/zip/allCountries.zip) file
 
 ## Install and Start
-Configure the application by setting environment variables. Refer to `src/config.js` to read up on the variables.
+Configure the application by setting environment variables in a file called `.env` (using dotenv). Refer to `src/config.js` to read up on the variables.
 
 ```
 yarn && yarn start

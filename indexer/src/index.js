@@ -1,4 +1,9 @@
+require('dotenv').config();
+
 const logger = require('get-logger')('indexer:index');
+const Promise = require('bluebird');
+
+Promise.promisifyAll(require('fs'));
 
 main()
   .then(() => {
@@ -10,9 +15,9 @@ main()
   });
 
 async function main() {
-  await require('./geonames').start();
-  await require('./elasticsearch').start();
   require('./admin').start();
+  await require('./imageHandling/geonames').start();
+  await require('./elasticsearch').start();
 
   // kick of the indexing action
   await require('./indexing').start();
