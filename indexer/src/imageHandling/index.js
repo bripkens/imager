@@ -12,15 +12,24 @@ const {getExif} = require('./exif');
 
 
 exports.processImage = async function processImage(p) {
-  logger.debug('Indexing image %s', p);
+  logger.debug('Processing image %s', p);
+
+  const hash = await getFileHash(p);
   const image = {
+    id: getId(p),
+    hash,
     path: p,
     relPath: path.relative(config.imageDir, p),
     saveDate: Date.now()
   };
-  const sharpImage = sharp(p).rotate();
 
-  addId(image);
+  const cachedVersion = await getCachedVersion(image);
+  if (cachedVersion) {
+    logger.debug('Skipping processing of image %s. Still cached.', p);
+    return cachedVersion;
+  }
+
+  const sharpImage = sharp(p).rotate();
   await addDimensionInfo(image, sharpImage);
   await addImagePreview(image, sharpImage);
   await addMeta(image);
@@ -29,14 +38,23 @@ exports.processImage = async function processImage(p) {
   // this needs to happen as the last step
   await writeImageData(image);
 
+  logger.debug('Finished processing image %s', p);
   return image;
 }
 
 
-function addId(image) {
+function getId(p) {
   const hash = crypto.createHash('sha256');
-  hash.update(image.relPath);
-  image.id = hash.digest('hex');
+  hash.update(p);
+  return hash.digest('hex');
+}
+
+
+async function getFileHash(p) {
+  const content = await fs.readFile(p);
+  const hash = crypto.createHash('sha256');
+  hash.update(content);
+  return hash.digest('hex');
 }
 
 
@@ -92,7 +110,8 @@ async function addImagePreview(image, sharpImage) {
   const buffer = await sharpImage
     .resize(width, height)
     .jpeg({
-      quality: 50
+      quality: 50,
+      force: true
     })
     .toBuffer();
   image.preview = `data:image/jpeg;base64,${buffer.toString('base64')}`;
@@ -137,13 +156,29 @@ async function addResizedVersion(image, sharpImage, outputDir, width) {
 async function writeImageData(image) {
   const outputDir = getOutputDir(image);
   await fs.mkdirp(outputDir);
-
-  const dataPath = path.join(outputDir, 'data.json');
-  const fileContent = JSON.stringify(image, 0, 2);
-  await fs.writeFile(dataPath, fileContent);
+  await fs.writeFile(getImageDataFilePath(image), JSON.stringify(image, 0, 2));
 }
 
 
 function getOutputDir(image) {
   return path.join(path.dirname(path.join(config.storageDir, image.relPath)), image.id);
+}
+
+
+async function getCachedVersion(image) {
+  try {
+    const content = await fs.readFile(getImageDataFilePath(image), {encoding: 'utf8'});
+    const existingImage = JSON.parse(content);
+    if (existingImage.hash === image.hash) {
+      return existingImage;
+    }
+    return null;
+  } catch (e) {
+    return false;
+  }
+}
+
+
+function getImageDataFilePath(image) {
+  return path.join(getOutputDir(image), 'data.json');
 }
