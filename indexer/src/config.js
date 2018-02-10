@@ -12,6 +12,7 @@ module.exports = {
   storageDir: getVarOrFail('INDEXER_STORAGE_DIR'),
   imageNameRegex: /\.(png|jpg|jpeg|gif)$/i,
   imagePreviewSize: 20,
+  imageResponsiveSizes: [320, 1024, 1920, 4096], // width in pixcels
 
   elasticsearch: {
     host: getVarOrFail('INDEXER_ELASTICSEARCH_HOST'),

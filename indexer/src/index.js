@@ -1,9 +1,6 @@
 require('dotenv').config();
 
 const logger = require('get-logger')('indexer:index');
-const Promise = require('bluebird');
-
-Promise.promisifyAll(require('fs'));
 
 main()
   .then(() => {

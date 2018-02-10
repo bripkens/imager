@@ -1,6 +1,6 @@
 const geokdbush = require('geokdbush');
 const kdbush = require('kdbush');
-const fs = require('fs');
+const fs = require('fs-extra');
 
 const config = require('../config');
 
@@ -34,7 +34,7 @@ async function parseCountryInfo() {
 }
 
 async function parseTsv(file) {
-  const fileContent = await fs.readFileAsync(file, {encoding: 'utf8'});
+  const fileContent = await fs.readFile(file, {encoding: 'utf8'});
   return fileContent.split('\n')
     .filter(line => line.indexOf('#') !== 0)
     .map(line => line.split('\t'));

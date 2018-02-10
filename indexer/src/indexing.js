@@ -1,8 +1,8 @@
 const logger = require('get-logger')('indexer:indexing');
 const promiseLimit = require('promise-limit');
 const Promise = require('bluebird');
+const fs = require('fs-extra');
 const path = require('path');
-const fs = require('fs');
 
 const {saveImages} = require('./elasticsearch');
 const config = require('./config');
@@ -24,7 +24,7 @@ async function indexDirectory(directory) {
   indexedDirectories[directory] = true;
 
   logger.debug('Indexing directory %s', directory);
-  const names = await fs.readdirAsync(directory);
+  const names = await fs.readdir(directory);
   const paths = names.map(name => path.join(directory, name));
   const {dirs, imgs} = await categorizePaths(paths);
   const images = await Promise.all(imgs.map(imgPath => concurrentImageIndexingJobLimiter(() => processImage(imgPath))));
@@ -35,7 +35,7 @@ async function indexDirectory(directory) {
 }
 
 async function categorizePaths(paths) {
-  const stats = await Promise.all(paths.map(p => fs.statAsync(p)));
+  const stats = await Promise.all(paths.map(p => fs.stat(p)));
   const dirs = [];
   const imgs = [];
   paths.forEach((p, i) => {
