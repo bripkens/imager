@@ -63,6 +63,14 @@ exports.start = async () => {
                   }
                 }
               }
+            },
+            'resizedVersions': {
+              'type': 'object',
+              'properties': {
+                'width': {'type': 'integer'},
+                'height': {'type': 'integer'},
+                'path': {'type': 'text', 'index': false}
+              }
             }
           }
         }

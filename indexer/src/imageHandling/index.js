@@ -104,8 +104,8 @@ async function addMeta(image) {
 
 
 async function addImagePreview(image, sharpImage) {
-  const width = image.aspectRatio > 1 ? config.imagePreviewSize : Math.round(image.aspectRatio * config.imagePreviewSize);
-  const height = image.aspectRatio < 1 ? config.imagePreviewSize : Math.round(1 / image.aspectRatio * config.imagePreviewSize);
+  const width = config.imagePreviewSize;
+  const height = Math.round(width * (1 / image.aspectRatio));
 
   const buffer = await sharpImage
     .resize(width, height)
@@ -137,7 +137,7 @@ async function addResizedVersions(image, sharpImage) {
 
 
 async function addResizedVersion(image, sharpImage, outputDir, width) {
-  const height = Math.round(width * image.aspectRatio);
+  const height = Math.round(width * (1 / image.aspectRatio));
   const target = path.join(outputDir, `${width}.jpg`);
 
   await sharpImage
