@@ -1,0 +1,25 @@
+{
+  "name": "facial-recognition",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "devDependencies": {
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1"
+  },
+  "dependencies": {
+    "dotenv": "^5.0.0",
+    "fs-extra": "^5.0.0",
+    "get-logger": "^1.0.0",
+    "glob": "^7.1.2",
+    "lodash": "^4.17.5",
+    "opencv4nodejs": "^3.0.3"
+  }
+}
