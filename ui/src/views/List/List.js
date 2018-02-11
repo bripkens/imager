@@ -16,6 +16,9 @@ query images($query: String) {
     width
     height
     preview
+    resizedVersions {
+      width
+    }
   }
 }
 `;
@@ -76,7 +79,7 @@ function Map({data}) {
       <TopBar />
 
       <ul key="list" style={styles.list.base}>
-        {(data.images || []).map(img => 
+        {(data.images || []).map(img =>
           <li key="item" style={styles.item.base} key={img.id}>
             <Image {...img} />
           </li>
@@ -85,4 +88,3 @@ function Map({data}) {
     </React.Fragment>
   )
 }
-

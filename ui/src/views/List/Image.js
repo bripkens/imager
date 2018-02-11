@@ -13,7 +13,8 @@ const styles = {
       width: `${desiredWidth}px`,
       height: `${desiredHeight}px`,
       overflow: "hidden",
-      position: 'relative'
+      position: 'relative',
+      display: 'block'
     }
   },
 
@@ -28,7 +29,7 @@ const styles = {
   }
 };
 
-function Image({ id, preview, width, height }) {
+function Image({ id, preview, width, height, resizedVersions }) {
   const aspectRatio = width / height;
   const landscape = aspectRatio > 1;
   const targetWidth = landscape ? aspectRatio * desiredWidth : desiredWidth;
@@ -42,10 +43,13 @@ function Image({ id, preview, width, height }) {
     position: 'absolute'
   };
 
-  const sourceImage = `/images/${id}`;
+  const sourceImagePath = `/images/${id}`;
+  const srcset = resizedVersions
+    .map(({width}) => `${sourceImagePath}/${width} ${width}w`)
+    .join(',\n');
 
   return (
-    <div key="wrapper" style={styles.wrapper.base} href={sourceImage}>
+    <a key="wrapper" style={styles.wrapper.base} href={sourceImagePath}>
       <img
         key="preview"
         style={[
@@ -61,9 +65,11 @@ function Image({ id, preview, width, height }) {
           styles.source.base,
           imagePositionAndSize
         ]}
-        src={sourceImage}
+        srcSet={srcset}
+        sizes={`${desiredWidth}px`}
+        src={sourceImagePath}
         alt="Source"
       />
-    </div>
+    </a>
   );
 }

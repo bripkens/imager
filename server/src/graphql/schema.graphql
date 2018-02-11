@@ -12,6 +12,11 @@ type Geo {
   continent: String
 }
 
+type ResizedVersion {
+  width: Int
+  height: Int
+}
+
 type Image {
   id: String!
   date: Float
@@ -24,7 +29,8 @@ type Image {
   orientation: String,
   preview: String,
   subjectArea: [Int]
-  geo: Geo
+  geo: Geo,
+  resizedVersions: [ResizedVersion]
 }
 
 type CityAggregationResult {
