@@ -2,6 +2,7 @@ const logger = require('get-logger')('indexer:imageHandling');
 const dms2dec = require('dms2dec');
 const moment = require('moment');
 const crypto = require('crypto');
+const {uniq} = require('lodash');
 const fs = require('fs-extra');
 const sharp = require('sharp');
 const path = require('path');
@@ -91,6 +92,7 @@ async function addMeta(image) {
     const location = dms2dec(exif.gps.GPSLatitude, exif.gps.GPSLatitudeRef, exif.gps.GPSLongitude, exif.gps.GPSLongitudeRef);
     image.geo = searchForGeoLocation(location[0], location[1]) || {};
     // we are not interested in the coordinates of the city, but we would like to keep using the coords of the pictures
+    [image.geo.lat, image.geo.lon] = location;
     image.geo.coords = {
       lat: location[0],
       lon: location[1]
@@ -124,8 +126,10 @@ async function addResizedVersions(image, sharpImage) {
   const outputDir = getOutputDir(image);
   await fs.mkdirp(outputDir);
 
-  const operations = config.imageResponsiveSizes
-    .filter(width => width <= image.width)
+  const operations = uniq(config.imageResponsiveSizes
+    .concat(image.width)
+    .sort((a, b) => a - b)
+    .filter(width => width <= image.width))
     .map(width => addResizedVersion(image, sharpImage, outputDir, width));
 
   await Promise.all(operations);

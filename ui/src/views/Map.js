@@ -63,13 +63,17 @@ function Map({data}) {
     )
   }
 
+  let map = null;
+
   return (
     <React.Fragment>
       <TopBar />
+      <a href="javascript:false" style={{position: 'fixed', bottom: '10px', left: '10px'}} onClick={() => setBoundsQuery(map)}> Bla blub</a>
       <GoogleMap
         defaultZoom={2}
         defaultCenter={{ lat: 0, lng: 0 }}
         streetViewControl={false}
+        ref={r => map = r}
       >
         <MarkerClusterer
           averageCenter
@@ -121,6 +125,34 @@ function calculateCluster(markers, numStyles) {
 function onClick(city) {
   mutateUrl(location => {
     location.pathname = '/list';
-    location.query.q = ((location.query.q || '') + `geo.location:"${city.city}"`).trim();
+    location.query.q = ((location.query.q || '') + ` geo.location:"${city.city}"`).trim();
   });
+}
+
+
+function setBoundsQuery(map) {
+  const bounds = map.getBounds();
+  const lat = [bounds.getNorthEast().lat(), bounds.getSouthWest().lat()]
+    .sort(numberComparator)
+    .map(v => v.toFixed(4));
+  const lon = [bounds.getNorthEast().lng(), bounds.getSouthWest().lng()]
+    .sort(numberComparator)
+    .map(v => v.toFixed(4));
+
+  const query = `geo.lat:>=${lat[0]} AND geo.lat:<=${lat[1]} AND geo.lon:>=${lon[0]} AND geo.lon:<=${lon[1]}`
+
+  mutateUrl(location => {
+    location.pathname = '/list';
+    location.query.q = ((location.query.q || '') + ` ${query}`).trim();
+  });
+}
+
+
+function numberComparator(a, b) {
+  if (a === b) {
+    return 0;
+  } else if (a < b) {
+    return -1;
+  }
+  return 1;
 }

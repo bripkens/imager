@@ -50,6 +50,10 @@ exports.start = async () => {
               'type': 'object',
               'properties': {
                 'coords': {'type': 'geo_point'},
+
+                // available for bounding box queries via query string queries
+                'lat': {'type': 'double'},
+                'lon': {'type': 'double'},
                 'city': {'type': 'text'},
                 'county': {'type': 'text'},
                 'country': {'type': 'text'},
