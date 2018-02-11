@@ -40,8 +40,21 @@ export function setQueryString(k, v) {
       history.push({
         pathname: location.pathname,
         search: `?${qs.stringify(query)}`
-      })
+      });
     }
+  });
+}
+
+
+export function mutateUrl(mutator) {
+  store.observable.take(1).subscribe(location => {
+    location = cloneDeep(location);
+    mutator(location);
+    console.log(location);
+    history.push({
+      pathname: location.pathname,
+      search: `?${qs.stringify(location.query)}`
+    });
   });
 }
 

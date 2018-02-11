@@ -8,7 +8,7 @@ import gql from 'graphql-tag';
 import React from 'react';
 
 import TopBar, {height as topBarHeight} from '../components/TopBar/TopBar';
-import { location$ } from '../stores/location';
+import { location$, mutateUrl } from '../stores/location';
 
 const query = gql`
 query cities($query: String) {
@@ -119,5 +119,8 @@ function calculateCluster(markers, numStyles) {
 
 
 function onClick(city) {
-  console.log('Map:101 city', city);
+  mutateUrl(location => {
+    location.pathname = '/list';
+    location.query.q = ((location.query.q || '') + `geo.location:"${city.city}"`).trim();
+  });
 }
