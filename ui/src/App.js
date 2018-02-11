@@ -13,6 +13,7 @@ import {
 } from 'react-router-dom';
 
 import { history } from './stores/location';
+import Detail from './views/Detail/Detail';
 import List from './views/List/List';
 import Map from './views/Map';
 
@@ -36,6 +37,7 @@ export default function App() {
           <Switch>
             <Route path="/map" component={Map}/>
             <Route path="/list" component={List}/>
+            <Route path="/images/:id" component={Detail}/>
             <Redirect from="/" to="/map"/>
           </Switch>
         </Router>

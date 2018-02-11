@@ -1,8 +1,17 @@
-import { compose } from "recompose";
-import radium from "radium";
-import React from "react";
+import { connect } from '@bripkens/rxstore-react';
+import { compose } from 'recompose';
+import radium from 'radium';
+import React from 'react';
 
-export default compose(radium)(Image);
+import { getSrc, getSrcSet } from '../../service/image';
+import { getUrl$ } from '../../stores/location';
+
+export default compose(
+  connect(({ id }) => ({
+    url: getUrl$(location => (location.pathname = `/images/${id}`))
+  })),
+  radium
+)(Image);
 
 const desiredWidth = 200;
 const desiredHeight = 150;
@@ -10,24 +19,22 @@ const desiredHeight = 150;
 const styles = {
   wrapper: {
     base: {
-      overflow: "hidden",
+      overflow: 'hidden',
       position: 'relative',
       display: 'block'
     }
   },
 
   preview: {
-    base: {
-    }
+    base: {}
   },
 
   source: {
-    base: {
-    }
+    base: {}
   }
 };
 
-function Image({ id, preview, width, height, resizedVersions }) {
+function Image({ id, preview, width, height, resizedVersions, url }) {
   const aspectRatio = width / height;
   const landscape = aspectRatio > 1;
   const targetWidth = landscape ? desiredWidth : desiredHeight * aspectRatio;
@@ -41,34 +48,25 @@ function Image({ id, preview, width, height, resizedVersions }) {
     position: 'absolute'
   };
 
-  const sourceImagePath = `/images/${id}`;
-  const srcset = resizedVersions
-    .map(({width}) => `${sourceImagePath}/${width} ${width}w`)
-    .join(',\n');
-
   return (
-    <a key="wrapper" style={[styles.wrapper.base, {
-      width: `${targetWidth}px`,
-      height: `${targetHeight}px`
-    }]} href={sourceImagePath}>
-      <img
-        key="preview"
-        style={[
-          styles.preview.base,
-          imagePositionAndSize
-        ]}
-        src={preview}
-        alt="Preview"
-      />
+    <a
+      key="wrapper"
+      style={[
+        styles.wrapper.base,
+        {
+          width: `${targetWidth}px`,
+          height: `${targetHeight}px`
+        }
+      ]}
+      href={url}
+    >
+      <img key="preview" style={[styles.preview.base, imagePositionAndSize]} src={preview} alt="Preview" />
       <img
         key="source"
-        style={[
-          styles.source.base,
-          imagePositionAndSize
-        ]}
-        srcSet={srcset}
+        style={[styles.source.base, imagePositionAndSize]}
+        src={getSrc(id)}
+        srcSet={getSrcSet(id, resizedVersions)}
         sizes={`${desiredWidth}px`}
-        src={sourceImagePath}
         alt="Source"
       />
     </a>

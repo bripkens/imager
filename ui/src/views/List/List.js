@@ -63,19 +63,16 @@ export default compose(
       };
     },
     props({data: {loading, error, images, fetchMore}}) {
-      console.log('props', arguments);
       return {
         loading,
         error,
         images,
         loadMore() {
-          console.log('###############################################');
           return fetchMore({
             variables: {
               page: Math.round(images.length / pageSize) + 1
             },
             updateQuery(previousResult, { fetchMoreResult }) {
-              console.log('updateQuery', arguments);
               if (!fetchMoreResult) { return previousResult; }
               return Object.assign({}, previousResult, {
                 // Append the new feed results to the old one
@@ -115,7 +112,7 @@ function List({loading, error, images=[], loadMore}) {
     <React.Fragment>
       <TopBar />
 
-      <ul style={styles.list.base}>
+      <ul style={styles.list.base} key="list">
         {images.map(img =>
           <li style={styles.item.base} key={img.id}>
             <Image {...img} key={img.id} />
