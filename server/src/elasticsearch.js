@@ -75,22 +75,28 @@ exports.getCitiesOverview = async (query) => {
 };
 
 
-exports.getImages = async (query) => {
-  const result = await client.search({
+exports.getImages = async ({query, pageSize=100, page=1, orderBy='date', orderDirection='asc'}) => {
+  const req = {
     index: 'imager',
     type: 'image',
     body: {
-      'size': 200,
+      'size': pageSize,
+      'from': (page - 1) * pageSize,
       'sort': [
-        {'date': {'order': 'asc'}}
-      ],
-      'query': {
-        'query_string': {
-          'query': query,
-          'default_operator': 'AND'
-        }
-      }
+        {[orderBy]: {'order': orderDirection}}
+      ]
     }
-  });
+  };
+
+  if (query && query.trim()) {
+    req.body.query = {
+      'query_string': {
+        'query': query,
+        'default_operator': 'AND'
+      }
+    };
+  }
+
+  const result = await client.search(req);
   return result.hits.hits.map(hit => hit._source);
 };

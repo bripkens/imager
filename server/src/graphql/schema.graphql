@@ -41,6 +41,6 @@ type CityAggregationResult {
 
 type Query {
   image(id: ID): Image
-  images(query: String): [Image]!
+  images(query: String, pageSize: Int, page: Int, orderBy: String, orderDirection: String): [Image]!
   cities(query: String): [CityAggregationResult]!
 }

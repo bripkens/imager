@@ -5,7 +5,7 @@ import React from "react";
 export default compose(radium)(Image);
 
 const desiredWidth = 200;
-const desiredHeight = 160;
+const desiredHeight = 150;
 
 const styles = {
   wrapper: {
@@ -29,15 +29,15 @@ const styles = {
 
 function Image({ id, preview, width, height, resizedVersions }) {
   const aspectRatio = width / height;
-  const landscape = aspectRatio < 1;
-  const targetWidth = landscape ? aspectRatio * desiredWidth : desiredWidth;
-  const targetHeight = targetWidth * (1 / aspectRatio);
+  const landscape = aspectRatio > 1;
+  const targetWidth = landscape ? desiredWidth : desiredHeight * aspectRatio;
+  const targetHeight = landscape ? desiredWidth * (1 / aspectRatio) : desiredHeight;
 
   const imagePositionAndSize = {
     width: `${targetWidth}px`,
     height: `${targetHeight}px`,
-    left: `0px`,
-    top: `0px`,
+    left: 0,
+    top: 0,
     position: 'absolute'
   };
 

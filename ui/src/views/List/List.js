@@ -9,9 +9,11 @@ import TopBar, {height as topBarHeight} from '../../components/TopBar/TopBar';
 import { location$ } from '../../stores/location';
 import Image from './Image';
 
+const pageSize = 200;
+
 const query = gql`
-query images($query: String) {
-  images(query: $query) {
+query images($query: String, $page: Int) {
+  images(query: $query, page: $page, pageSize: ${pageSize}) {
     id
     width
     height
@@ -51,16 +53,46 @@ export default compose(
     query: location$.map(location => location.query.q || '')
   }),
   graphql(query, {
-    options: {
-      errorPolicy: 'all'
+    options(props) {
+      return {
+        errorPolicy: 'all',
+        variables: {
+          query: props.query,
+          page: 1
+        }
+      };
+    },
+    props({data: {loading, error, images, fetchMore}}) {
+      console.log('props', arguments);
+      return {
+        loading,
+        error,
+        images,
+        loadMore() {
+          console.log('###############################################');
+          return fetchMore({
+            variables: {
+              page: Math.round(images.length / pageSize) + 1
+            },
+            updateQuery(previousResult, { fetchMoreResult }) {
+              console.log('updateQuery', arguments);
+              if (!fetchMoreResult) { return previousResult; }
+              return Object.assign({}, previousResult, {
+                // Append the new feed results to the old one
+                images: [...previousResult.images, ...fetchMoreResult.images]
+              });
+            },
+          });
+        },
+      };
     }
   }),
   radium
-)(Map);
+)(List);
 
 
-function Map({data}) {
-  if (data.loading) {
+function List({loading, error, images=[], loadMore}) {
+  if (loading) {
     return (
       <React.Fragment>
         <TopBar />
@@ -69,8 +101,8 @@ function Map({data}) {
     )
   }
 
-  if (data.error) {
-    console.error(data.error);
+  if (error) {
+    console.error(error);
     return (
       <React.Fragment>
         <TopBar />
@@ -83,13 +115,15 @@ function Map({data}) {
     <React.Fragment>
       <TopBar />
 
-      <ul key="list" style={styles.list.base}>
-        {(data.images || []).map(img =>
+      <ul style={styles.list.base}>
+        {images.map(img =>
           <li style={styles.item.base} key={img.id}>
             <Image {...img} key={img.id} />
           </li>
         )}
       </ul>
+
+      <a href="javascript:false" onClick={() => loadMore()}>Load more</a>
     </React.Fragment>
   )
 }
