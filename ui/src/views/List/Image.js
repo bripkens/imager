@@ -10,8 +10,6 @@ const desiredHeight = 160;
 const styles = {
   wrapper: {
     base: {
-      width: `${desiredWidth}px`,
-      height: `${desiredHeight}px`,
       overflow: "hidden",
       position: 'relative',
       display: 'block'
@@ -31,15 +29,15 @@ const styles = {
 
 function Image({ id, preview, width, height, resizedVersions }) {
   const aspectRatio = width / height;
-  const landscape = aspectRatio > 1;
+  const landscape = aspectRatio < 1;
   const targetWidth = landscape ? aspectRatio * desiredWidth : desiredWidth;
-  const targetHeight = landscape ? desiredHeight : (1 / aspectRatio) * desiredHeight;
+  const targetHeight = targetWidth * (1 / aspectRatio);
 
   const imagePositionAndSize = {
     width: `${targetWidth}px`,
     height: `${targetHeight}px`,
-    left: `${(targetWidth - desiredWidth) / -2}px`,
-    top: `${(targetHeight - desiredHeight) / -2}px`,
+    left: `0px`,
+    top: `0px`,
     position: 'absolute'
   };
 
@@ -49,7 +47,10 @@ function Image({ id, preview, width, height, resizedVersions }) {
     .join(',\n');
 
   return (
-    <a key="wrapper" style={styles.wrapper.base} href={sourceImagePath}>
+    <a key="wrapper" style={[styles.wrapper.base, {
+      width: `${targetWidth}px`,
+      height: `${targetHeight}px`
+    }]} href={sourceImagePath}>
       <img
         key="preview"
         style={[

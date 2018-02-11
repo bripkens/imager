@@ -29,14 +29,19 @@ const styles = {
     base: {
       margin: `${topBarHeight + 16}px 1rem 1rem`,
       padding: 0,
-      listStyle: 'none'
+      listStyle: 'none',
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      alignItems: 'center'
     }
   },
 
   item: {
     base: {
       display: 'inline-block',
-      padding: '8px'
+      padding: '2px',
+      flexShrink: 0
     }
   }
 };
@@ -80,8 +85,8 @@ function Map({data}) {
 
       <ul key="list" style={styles.list.base}>
         {(data.images || []).map(img =>
-          <li key="item" style={styles.item.base} key={img.id}>
-            <Image {...img} />
+          <li style={styles.item.base} key={img.id}>
+            <Image {...img} key={img.id} />
           </li>
         )}
       </ul>
